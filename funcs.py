@@ -8,6 +8,18 @@ from utils import *
 from spikingjelly.clock_driven import encoding
 from modules import LabelSmoothing
 import torch.distributed as dist
+import random
+import os
+
+def seed_all(seed=42):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
 
 def eval_ann(test_dataloader, model, epoch, device, rank=0):
     epoch_loss = 0

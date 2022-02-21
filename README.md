@@ -7,9 +7,12 @@ Train ResNet-34 on ImageNet parallel
 python train.py --gpus=8 --L=8 --id=MODEL_SAVED_NAME
 ```
 
-Testing
-
+Test ANN
+```python
+python evaluate.py --mode=ann --gpus=8 --t=8 --id=MODEL_SAVED_NAME
 ```
-On construction
-```
 
+Test SNN
+```python
+python evaluate.py --mode=snn --gpus=8 --t=8 --id=MODEL_SAVED_NAME
+```
