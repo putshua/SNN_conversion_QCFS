@@ -3,8 +3,10 @@ Codes for Optimal ANN-SNN Conversion for High-accuracy and Ultra-low-latency Spi
 
 ## Usage
 Train ResNet-34 on ImageNet parallel
+
+Train ANN
 ```python
-python train.py --gpus=8 --L=8 --id=MODEL_SAVED_NAME
+python train.py --gpus=8 --l=8 --id=MODEL_SAVED_NAME
 ```
 
 Test ANN
