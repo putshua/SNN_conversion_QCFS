@@ -83,7 +83,6 @@ class TCL(nn.Module):
         x = self.up - x
         return x
 
-
 class LabelSmoothing(nn.Module):
     """
     NLL loss with label smoothing.

@@ -27,7 +27,6 @@ def replace_activation_by_floor(model, t):
             model._modules[name] = replace_activation_by_floor(module, t)
         if isActivation(module.__class__.__name__.lower()):
             if hasattr(module, "up"):
-                # print(module.up.item())
                 model._modules[name] = MyFloor(module.up.item(), t)
             else:
                 model._modules[name] = MyFloor(up=4., t=t)

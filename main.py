@@ -3,7 +3,7 @@ import torch.multiprocessing as mp
 import argparse
 from torch import nn
 import torch
-from preprocess import GetImageNet
+from Preprocess.getdataloader import GetImageNet
 import os
 import random
 from Models.VGG import vgg16
