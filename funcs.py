@@ -55,7 +55,7 @@ def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn,
         epoch_loss = 0
         length = 0
         model.train()
-        for idx, (img, label) in enumerate(data):
+        for idx, (img, label) in enumerate(train_dataloader):
             img = img.cuda(device, non_blocking=True)
             label = label.cuda(device, non_blocking=True)
             optimizer.zero_grad()
