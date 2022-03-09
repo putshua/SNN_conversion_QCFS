@@ -27,9 +27,16 @@ def replace_activation_by_floor(model, t):
             model._modules[name] = replace_activation_by_floor(module, t)
         if isActivation(module.__class__.__name__.lower()):
             if hasattr(module, "up"):
-                model._modules[name] = MyFloor(module.up.item(), t)
+                print(module.up.item())
+                if t == 0:
+                    model._modules[name] = TCL()
+                else:
+                    model._modules[name] = MyFloor(module.up.item(), t)
             else:
-                model._modules[name] = MyFloor(up=4., t=t)
+                if t == 0:
+                    model._modules[name] = TCL()
+                else:
+                    model._modules[name] = MyFloor(up=8., t=t)
     return model
 
 def replace_activation_by_neuron(model):
@@ -132,3 +139,24 @@ def regular_set(model, paras=([],[],[])):
             for name, para in module.named_parameters():
                 paras[1].append(para)
     return paras
+
+class LabelSmoothing(nn.Module):
+    """
+    NLL loss with label smoothing.
+    """
+    def __init__(self, smoothing=0.1):
+        """
+        Constructor for the LabelSmoothing module.
+        :param smoothing: label smoothing factor
+        """
+        super(LabelSmoothing, self).__init__()
+        self.confidence = 1.0 - smoothing
+        self.smoothing = smoothing
+
+    def forward(self, x, target):
+        logprobs = torch.nn.functional.log_softmax(x, dim=-1)
+        nll_loss = -logprobs.gather(dim=-1, index=target.unsqueeze(1))
+        nll_loss = nll_loss.squeeze(1)
+        smooth_loss = -logprobs.mean(dim=-1)
+        loss = self.confidence * nll_loss + self.smoothing * smooth_loss
+        return loss.mean()

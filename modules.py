@@ -47,7 +47,6 @@ class ShiftNeuron(nn.Module):
         self.vt = 0.
         self.scale = scale
         self.neuron = neuron.IFNode(v_reset=None)
-
     def forward(self, x):  
         x = x / self.scale
         x = self.neuron(x)
@@ -60,7 +59,7 @@ class ShiftNeuron(nn.Module):
             self.neuron.v = self.vt
 
 class MyFloor(nn.Module):
-    def __init__(self, up=4., t=32):
+    def __init__(self, up=8., t=32):
         super().__init__()
         self.up = nn.Parameter(torch.tensor([up]), requires_grad=True)
         self.t = t

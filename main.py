@@ -1,6 +1,5 @@
 import torch.multiprocessing as mp
 import argparse
-from Preprocess.getdataloader import GetImageNet
 from Models import modelpool
 from Preprocess import datapool
 from funcs import *
@@ -21,7 +20,8 @@ if __name__ == "__main__":
     parser.add_argument('--id', default=None, type=str, help='Model identifier')
     parser.add_argument('--device', default='cuda', type=str, help='cuda or cpu')
     parser.add_argument('--l', default=16, type=int, help='L')
-    parser.add_argument('--mode', type=str, default='snn')
+    parser.add_argument('--t', default=16, type=int, help='T')
+    parser.add_argument('--mode', type=str, default='ann')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--data', type=str, default='cifar100')
     parser.add_argument('--model', type=str, default='vgg16')
@@ -40,19 +40,21 @@ if __name__ == "__main__":
         # preparing model
         model = modelpool(args.model, args.data)
         model = replace_maxpool2d_by_avgpool2d(model)
-        criterion = nn.CrossEntropyLoss().to(args.device)
+        model = replace_activation_by_floor(model, t=args.l)
+        criterion = nn.CrossEntropyLoss()
+        # criterion = LabelSmoothing(0.05)
         if args.action == 'train':
-            model = replace_activation_by_floor(model, t=args.l)
-            model.to(args.device)
             train_ann(train, test, model, args.epochs, args.device, criterion, args.lr, args.wd, args.id)
         elif args.action == 'test' or args.action == 'evaluate':
+            model.load_state_dict(torch.load('./saved_models/' + args.id + '.pth'))
             if args.mode == 'snn':
                 model = replace_activation_by_neuron(model)
                 model.to(args.device)
-                eval_snn(test, model, args.device, args.t)
+                acc = eval_snn(test, model, args.device, args.t)
+                print('Accuracy: ', acc)
             elif args.mode == 'ann':
-                model = replace_activation_by_floor(model, t=args.l)
                 model.to(args.device)
-                eval_ann(test, model, criterion, args.device)
+                acc, _ = eval_ann(test, model, criterion, args.device)
+                print('Accuracy: {:.4f}'.format(acc))
             else:
                 AssertionError('Unrecognized mode')
