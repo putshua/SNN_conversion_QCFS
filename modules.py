@@ -66,8 +66,8 @@ class MyFloor(nn.Module):
 
     def forward(self, x):
         x = x / self.up
-        x = myfloor(x*self.t+0.5)/self.t
         x = torch.clamp(x, 0, 1)
+        x = myfloor(x*self.t+0.5)/self.t
         x = x * self.up
         return x
 

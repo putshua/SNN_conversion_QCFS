@@ -36,7 +36,7 @@ def replace_activation_by_floor(model, t):
                 if t == 0:
                     model._modules[name] = TCL()
                 else:
-                    model._modules[name] = MyFloor(up=8., t=t)
+                    model._modules[name] = MyFloor(8., t)
     return model
 
 def replace_activation_by_neuron(model):

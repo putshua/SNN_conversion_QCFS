@@ -6,6 +6,7 @@ from funcs import *
 from utils import replace_activation_by_floor, replace_activation_by_neuron, replace_maxpool2d_by_avgpool2d
 from ImageNet.train import main_worker
 import torch.nn as nn
+import os
 
 if __name__ == "__main__":
 
@@ -28,6 +29,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     seed_all()
+    os.environ['CUDA_VISIBLE_DEVICES'] = '6'
 
     # only ImageNet using multiprocessing, 
     if args.gpus > 1:

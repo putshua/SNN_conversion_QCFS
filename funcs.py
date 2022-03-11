@@ -76,13 +76,9 @@ def eval_snn(test_dataloader, model, device, sim_len=8, rank=0):
     length = 0
     model = model.cuda(device)
     model.eval()
-    if rank == 0:
-        data = tqdm(test_dataloader)
-    else:
-        data = test_dataloader
     # valuate
     with torch.no_grad():
-        for idx, (img, label) in enumerate(data):
+        for idx, (img, label) in enumerate(tqdm(test_dataloader)):
             spikes = 0
             length += len(label)
             img = img.cuda()
