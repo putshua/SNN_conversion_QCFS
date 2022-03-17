@@ -29,9 +29,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     seed_all()
-    os.environ['CUDA_VISIBLE_DEVICES'] = '6'
 
-    # only ImageNet using multiprocessing, 
+    # only ImageNet using multiprocessing,
     if args.gpus > 1:
         if args.data.lower() != 'imagenet':
             AssertionError('Only ImageNet using multiprocessing.')

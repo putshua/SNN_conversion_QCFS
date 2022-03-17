@@ -6,7 +6,7 @@ import os
 from Preprocess.augment import Cutout, CIFAR10Policy
 
 # your own data dir
-DIR = {'CIFAR10': '~/datasets', 'CIFAR100': '~/datasets', 'ImageNet': 'YOUR_IMAGENET_DIR'}
+DIR = {'CIFAR10': 'E:\datasets', 'CIFAR100': 'E:\datasets', 'ImageNet': 'YOUR_IMAGENET_DIR'}
 
 # def GetCifar10(batchsize, attack=False):
 #     if attack:
