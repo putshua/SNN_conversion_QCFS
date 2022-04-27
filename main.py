@@ -43,7 +43,6 @@ if __name__ == "__main__":
         model = replace_maxpool2d_by_avgpool2d(model)
         model = replace_activation_by_floor(model, t=args.l)
         criterion = nn.CrossEntropyLoss()
-        # criterion = LabelSmoothing(0.05)
         if args.action == 'train':
             train_ann(train, test, model, args.epochs, args.device, criterion, args.lr, args.wd, args.id)
         elif args.action == 'test' or args.action == 'evaluate':
