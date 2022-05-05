@@ -100,7 +100,7 @@ def GetDVSGesture(batchsize,
             filter_time=10000):
 
     sensor_size = tonic.datasets.DVSGesture.sensor_size
-    trans_ann = transform.Compose([ # TODO decide which transforms
+    trans_ann = transform.Compose([ # TODO decide which transforms (need to extract images)
                             tonic.transform.Denoise(filter_time=filter_time),
                             tonic.transforms.ToFrame(sensor_size=sensor_size, time_window=time_window, n_time_bins=n_time_bins, n_event_bins=n_event_bins),
                         ])
@@ -118,4 +118,4 @@ def GetDVSGesture(batchsize,
     test_dataloader_ann = DataLoader(test_data_ann, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
     test_dataloader_snn = DataLoader(test_data_snn, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
 
-    return train_data, test_data
+    return train_dataloader, test_dataloader_ann, test_dataloader_snn
