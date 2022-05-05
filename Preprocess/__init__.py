@@ -7,6 +7,8 @@ def datapool(DATANAME, batchsize):
         return GetCifar100(batchsize)
     elif DATANAME.lower() == 'imagenet':
         return GetImageNet(batchsize)
+    elif DATANAME.lower() == 'dvsgesture':
+        return GetDVSGesture(batchsize)
     else:
         print("still not support this model")
         exit(0)

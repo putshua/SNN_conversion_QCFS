@@ -6,7 +6,11 @@ import os
 from Preprocess.augment import Cutout, CIFAR10Policy
 
 # your own data dir
-DIR = {'CIFAR10': 'E:\datasets', 'CIFAR100': 'E:\datasets', 'ImageNet': 'YOUR_IMAGENET_DIR'}
+DIR = { 'CIFAR10': 'E:\datasets',
+        'CIFAR100': 'E:\datasets',
+        'ImageNet': 'YOUR_IMAGENET_DIR', 
+        'DVSGesture': 'E:\datasets'
+    }
 
 # def GetCifar10(batchsize, attack=False):
 #     if attack:
@@ -89,3 +93,9 @@ def GetImageNet(batchsize):
     test_sampler = torch.utils.data.distributed.DistributedSampler(test_data)
     test_dataloader = DataLoader(test_data, batch_size=batchsize, shuffle=False, num_workers=2, sampler=test_sampler) 
     return train_dataloader, test_dataloader
+
+def GetDVSGesture(batchsize):
+
+    # TODO complete
+
+    return None
