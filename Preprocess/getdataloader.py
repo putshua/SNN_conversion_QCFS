@@ -4,12 +4,13 @@ from torch.utils.data import DataLoader
 import torch
 import os
 from Preprocess.augment import Cutout, CIFAR10Policy
+import tonic
 
 # your own data dir
-DIR = { 'CIFAR10': 'E:\datasets',
-        'CIFAR100': 'E:\datasets',
+DIR = { 'CIFAR10': 'cluster/scratch/rsrinivasan/datasets',
+        'CIFAR100': 'cluster/scratch/rsrinivasan/datasets',
         'ImageNet': 'YOUR_IMAGENET_DIR', 
-        'DVSGesture': 'E:\datasets'
+        'DVSGesture': 'cluster/scratch/rsrinivasan/datasets'
     }
 
 # def GetCifar10(batchsize, attack=False):
@@ -94,8 +95,27 @@ def GetImageNet(batchsize):
     test_dataloader = DataLoader(test_data, batch_size=batchsize, shuffle=False, num_workers=2, sampler=test_sampler) 
     return train_dataloader, test_dataloader
 
-def GetDVSGesture(batchsize):
+def GetDVSGesture(batchsize, 
+            time_window=None, n_time_bins=None, n_event_bins=None, overlap=None, 
+            filter_time=10000):
 
-    # TODO complete
+    sensor_size = tonic.datasets.DVSGesture.sensor_size
+    trans_ann = transform.Compose([ # TODO decide which transforms
+                            tonic.transform.Denoise(filter_time=filter_time),
+                            tonic.transforms.ToFrame(sensor_size=sensor_size, time_window=time_window, n_time_bins=n_time_bins, n_event_bins=n_event_bins),
+                        ])
 
-    return None
+    trans_snn = transform.Compose([ # TODO decide which transforms
+                            tonic.transform.Denoise(filter_time=filter_time),
+                        ])
+    
+
+    train_data = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'train'), train=True, transform=trans_ann)
+    test_data_ann = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'test'), train=False, transform=trans_ann)
+    test_data_snn = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'test'), train=False, transform=trans_snn)
+
+    train_dataloader = DataLoader(train_data, batch_size=batchsize, shuffle=True, num_workers=8, pin_memory=True)
+    test_dataloader_ann = DataLoader(test_data_ann, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
+    test_dataloader_snn = DataLoader(test_data_snn, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
+
+    return train_data, test_data
