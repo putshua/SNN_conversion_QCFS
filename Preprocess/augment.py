@@ -227,3 +227,23 @@ class CIFAR10Policy(object):
 
     def __repr__(self):
         return "AutoAugment CIFAR10 Policy"
+
+class DVSGesturePolicy(object):
+
+    """ TODO: Randomly choose one of the best 25 Sub-policies on DVSGesture.
+
+        TODO: Write example
+
+    """
+
+    # TODO initialize sub policies and change fill color (working on black and white)
+    def __init__(self, fillcolor=(128, 128, 128)):
+        self.policies = []
+
+    def __call__(self, img):
+        policy_idx = random.randint(0, len(self.policies) - 1)
+        return self.policies[policy_idx](img)
+
+    def __repr__(self):
+        return "AutoAugment DVSGEsture Policy"
+        
