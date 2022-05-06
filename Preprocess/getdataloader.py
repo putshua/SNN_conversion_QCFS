@@ -3,7 +3,7 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import torch
 import os
-from Preprocess.augment import Cutout, CIFAR10Policy
+from Preprocess.augment import Cutout, CIFAR10Policy, DVSGesturePolicy
 
 import tonic
 from tonic.slicers import SliceByEventCount
@@ -101,17 +101,17 @@ def GetImageNet(batchsize):
 def GetDVSGesture(batchsize, slicer=SliceByEventCount(event_count=3000), filter_time=10000):
 
     sensor_size = tonic.datasets.DVSGesture.sensor_size
-    trans_ann = tonic.transforms.Compose([ # TODO decide which transforms (need to extract images)
+    trans_ann = tonic.transforms.Compose([
                             tonic.transforms.Denoise(filter_time=filter_time),
                             tonic.transforms.RandomFlipPolarity(),
                             tonic.transforms.SpatialJitter(sensor_size=sensor_size, clip_outliers=True),
                             tonic.transforms.ToImage(sensor_size=sensor_size),
-                            torch.from_numpy
+                            DVSGesturePolicy(),
+                            transforms.ToTensor(),
+                            Cutout(n_holes=1, length=8)
                         ])
 
-    trans_snn = transforms.Compose([ # TODO decide which transforms
-                            tonic.transforms.Denoise(filter_time=filter_time)
-                        ])
+    trans_snn = tonic.transforms.Denoise(filter_time=filter_time)
 
     train_data = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'train'), train=True, transform=None)
     test_data_ann = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'test'), train=False, transform=None)
