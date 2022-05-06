@@ -228,22 +228,34 @@ class CIFAR10Policy(object):
     def __repr__(self):
         return "AutoAugment CIFAR10 Policy"
 
-class DVSGesturePolicy(object):
+class DVSGesturePolicy(object): # TODO Add more subpolicies
 
-    """ TODO: Randomly choose one of the best 25 Sub-policies on DVSGesture.
+    """ Randomly choose one of the best 3 Sub-policies on DVSGesture.
 
-        TODO: Write example
+        Example:
+        >>> policy = DVSGesturePolicy()
+        >>> transformed = policy(image)
+
+        Example as a PyTorch Transform:
+        >>> transform=transforms.Compose([
+        >>>     tonic.transforms.ToImage(sensor_size=sensor_size),
+        >>>     DVSGesturePolicy(),
+        >>>     transforms.ToTensor()])
 
     """
 
-    # TODO initialize sub policies and change fill color (working on black and white)
-    def __init__(self, fillcolor=(128, 128, 128)):
-        self.policies = []
+    # TODO decide which subplicies are worth using if any
+    def __init__(self, fillcolor=(0, 0)):
+        self.policies = [
+            SubPolicy(0.7, "rotate", 2, 0.3, "translateX", 9, fillcolor),
+            SubPolicy(0.5, "shearY", 8, 0.7, "translateY", 9, fillcolor),
+            SubPolicy(0.5, "shearY", 8, 0.7, "translateY", 9, fillcolor)
+        ]
 
     def __call__(self, img):
         policy_idx = random.randint(0, len(self.policies) - 1)
         return self.policies[policy_idx](img)
 
     def __repr__(self):
-        return "AutoAugment DVSGEsture Policy"
+        return "AutoAugment DVSGesture Policy"
         
