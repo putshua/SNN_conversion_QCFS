@@ -5,15 +5,17 @@ import torch
 import os
 from Preprocess.augment import Cutout, CIFAR10Policy, DVSGesturePolicy
 
+import numpy as np
+
 import tonic
 from tonic.slicers import SliceByEventCount
 from tonic import SlicedDataset
 
 # your own data dir
-DIR = { 'CIFAR10': 'cluster/scratch/rsrinivasan/datasets',
-        'CIFAR100': 'cluster/scratch/rsrinivasan/datasets',
+DIR = { 'CIFAR10': '/cluster/scratch/rsrinivasan/datasets',
+        'CIFAR100': '/cluster/scratch/rsrinivasan/datasets',
         'ImageNet': 'YOUR_IMAGENET_DIR', 
-        'DVSGesture': 'cluster/scratch/rsrinivasan/datasets'
+        'DVSGesture': '/cluster/scratch/rsrinivasan/datasets'
     }
 
 # def GetCifar10(batchsize, attack=False):
@@ -106,7 +108,9 @@ def GetDVSGesture(batchsize, slicer=SliceByEventCount(event_count=3000), filter_
                             tonic.transforms.RandomFlipPolarity(),
                             tonic.transforms.SpatialJitter(sensor_size=sensor_size, clip_outliers=True),
                             tonic.transforms.ToImage(sensor_size=sensor_size),
-                            DVSGesturePolicy(),
+                            tonic.transforms.NumpyAsType(np.uint8),
+                            transforms.ToPILImage(),
+                            #DVSGesturePolicy(),
                             transforms.ToTensor(),
                             Cutout(n_holes=1, length=8)
                         ])
