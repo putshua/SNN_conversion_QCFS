@@ -101,7 +101,7 @@ def GetImageNet(batchsize):
 def GetDVSGesture(batchsize, slicer=SliceByEventCount(event_count=3000), filter_time=10000):
 
     sensor_size = tonic.datasets.DVSGesture.sensor_size
-    trans_ann = tonic.transforms.Compose([
+    trans_ann_train = tonic.transforms.Compose([
                             tonic.transforms.Denoise(filter_time=filter_time),
                             tonic.transforms.RandomFlipPolarity(),
                             tonic.transforms.SpatialJitter(sensor_size=sensor_size, clip_outliers=True),
@@ -111,14 +111,20 @@ def GetDVSGesture(batchsize, slicer=SliceByEventCount(event_count=3000), filter_
                             Cutout(n_holes=1, length=8)
                         ])
 
+    trans_ann_test = tonic.transforms.Compose([
+                            tonic.transforms.Denoise(filter_time=filter_time),
+                            tonic.transforms.ToImage(sensor_size=sensor_size),
+                            transforms.ToTensor()
+                        ])
+
     trans_snn = tonic.transforms.Denoise(filter_time=filter_time)
 
     train_data = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'train'), train=True, transform=None)
     test_data_ann = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'test'), train=False, transform=None)
     test_data_snn = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'test'), train=False, transform=trans_snn)
 
-    sliced_td = SlicedDataset(train_data, slicer=slicer, transform=trans_ann, metadata_path=os.path.join(DIR['DVSGesture'], 'metedata/train'))
-    sliced_ann = SlicedDataset(test_data_ann, slicer=slicer, transform=trans_ann, metadata_path=os.path.join(DIR['DVSGesture'], 'metedata/test'))
+    sliced_td = SlicedDataset(train_data, slicer=slicer, transform=trans_ann_train, metadata_path=os.path.join(DIR['DVSGesture'], 'metedata/train'))
+    sliced_ann = SlicedDataset(test_data_ann, slicer=slicer, transform=trans_ann_test, metadata_path=os.path.join(DIR['DVSGesture'], 'metedata/test'))
 
     train_dataloader = DataLoader(sliced_td, batch_size=batchsize, shuffle=True, num_workers=8, pin_memory=True)
     test_dataloader_ann = DataLoader(sliced_ann, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
