@@ -228,6 +228,7 @@ class CIFAR10Policy(object):
     def __repr__(self):
         return "AutoAugment CIFAR10 Policy"
 
+'''
 class DVSGesturePolicy(object): # TODO Add more subpolicies
 
     """ Randomly choose one of the best 3 Sub-policies on DVSGesture.
@@ -245,7 +246,7 @@ class DVSGesturePolicy(object): # TODO Add more subpolicies
     """
 
     # TODO decide which subplicies are worth using if any
-    def __init__(self, fillcolor=(0, 0)):
+    def __init__(self, fillcolor=(128, 128, 128)):
         self.policies = [
             SubPolicy(0.7, "rotate", 2, 0.3, "translateX", 9, fillcolor),
             SubPolicy(0.5, "shearY", 8, 0.7, "translateY", 9, fillcolor),
@@ -258,4 +259,5 @@ class DVSGesturePolicy(object): # TODO Add more subpolicies
 
     def __repr__(self):
         return "AutoAugment DVSGesture Policy"
+'''
         

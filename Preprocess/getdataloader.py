@@ -3,7 +3,7 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import torch
 import os
-from Preprocess.augment import Cutout, CIFAR10Policy, DVSGesturePolicy
+from Preprocess.augment import Cutout, CIFAR10Policy
 
 import numpy as np
 
@@ -100,7 +100,7 @@ def GetImageNet(batchsize):
     test_dataloader = DataLoader(test_data, batch_size=batchsize, shuffle=False, num_workers=2, sampler=test_sampler) 
     return train_dataloader, test_dataloader
 
-def GetDVSGesture(batchsize, slicer=SliceByEventCount(event_count=3000), filter_time=10000):
+def GetDVSGesture(batchsize, test_batchsize=4, slicer=SliceByEventCount(event_count=3000), filter_time=10000, time_window=1000, ms_end=300):
 
     sensor_size = tonic.datasets.DVSGesture.sensor_size
     trans_ann_train = tonic.transforms.Compose([
@@ -108,20 +108,21 @@ def GetDVSGesture(batchsize, slicer=SliceByEventCount(event_count=3000), filter_
                             tonic.transforms.RandomFlipPolarity(),
                             tonic.transforms.SpatialJitter(sensor_size=sensor_size, clip_outliers=True),
                             tonic.transforms.ToImage(sensor_size=sensor_size),
-                            tonic.transforms.NumpyAsType(np.uint8),
-                            transforms.ToPILImage(),
-                            #DVSGesturePolicy(),
-                            transforms.ToTensor(),
+                            transforms.Lambda(lambda x: torch.from_numpy(x)),
                             Cutout(n_holes=1, length=8)
                         ])
 
     trans_ann_test = tonic.transforms.Compose([
                             tonic.transforms.Denoise(filter_time=filter_time),
                             tonic.transforms.ToImage(sensor_size=sensor_size),
-                            transforms.ToTensor()
+                            transforms.Lambda(lambda x: torch.from_numpy(x))
                         ])
 
-    trans_snn = tonic.transforms.Denoise(filter_time=filter_time)
+    trans_snn = tonic.transforms.Compose([
+        tonic.transforms.Denoise(filter_time=filter_time),
+        tonic.transforms.ToFrame(sensor_size=sensor_size, time_window=time_window),
+        transforms.Lambda(lambda x: x[:ms_end, :, :, :])
+    ])
 
     train_data = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'train'), train=True, transform=None)
     test_data_ann = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'test'), train=False, transform=None)
@@ -132,6 +133,6 @@ def GetDVSGesture(batchsize, slicer=SliceByEventCount(event_count=3000), filter_
 
     train_dataloader = DataLoader(sliced_td, batch_size=batchsize, shuffle=True, num_workers=8, pin_memory=True)
     test_dataloader_ann = DataLoader(sliced_ann, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
-    test_dataloader_snn = DataLoader(test_data_snn, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
+    test_dataloader_snn = DataLoader(test_data_snn, batch_size=test_batchsize, shuffle=False, num_workers=4, pin_memory=True)
 
     return train_dataloader, test_dataloader_ann, test_dataloader_snn
