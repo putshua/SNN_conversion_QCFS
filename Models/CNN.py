@@ -3,7 +3,7 @@ import torch.nn as nn
 
 class CNN(nn.Module):
     def __init__(self, width, height, in_channels,num_classes):
-        super(CNN, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = 8 # intermediate channels
         self.num_classes = num_classes
@@ -22,7 +22,7 @@ class CNN(nn.Module):
         )
 
         self.linear_layer = nn.Sequential(
-            nn.Linear(self.out_channels * (width / 4) * (height / 4), self.num_classes) # 4, since the size halves at each maxpool w/current config: Hout = (Hin - 2)/2 + 1
+            nn.Linear(self.out_channels * int(width / 4) * int(height / 4), self.num_classes) # 4, since the size halves at each maxpool w/current config: Hout = (Hin - 2)/2 + 1
         )
     def forward(self, x):
         x = self.cnn_layers(x)

@@ -20,7 +20,7 @@ def modelpool(MODELNAME, DATANAME):
     elif MODELNAME.lower() == 'cnn':
         if 'cifar' in DATANAME.lower(): 
             return cnn(width=32, height=32, in_channels=3, num_classes=num_classes)
-        elif 'dvsgestures' in DATANAME.lower():
+        elif 'dvsgesture' in DATANAME.lower():
             return cnn(width=128, height=128, in_channels=2, num_classes=num_classes)
     else:
         print("still not support this model/dataset combination")

@@ -39,7 +39,10 @@ if __name__ == "__main__":
         mp.spawn(main_worker, nprocs=args.gpus, args=(args.gpus, args))
     else:
         # preparing data
-        train, test = datapool(args.data, args.bs)
+        if args.data == 'dvsgesture':
+            train, test, test_snn = datapool(args.data, args.bs)
+        else: 
+            train, test = datapool(args.data, args.bs)
         # preparing model
         model = modelpool(args.model, args.data)
         model = replace_maxpool2d_by_avgpool2d(model)
