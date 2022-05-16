@@ -15,6 +15,7 @@ __pycache__/
 
 # WIP Serialized models
 # models/*
+saved_models
 explore_data.py
 
 # Data
