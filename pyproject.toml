@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "ai-research-snn"
+version = "0.1.0"
+description = ""
+authors = ["Robin Chan <chanr@student.ethz.ch>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+torch = "^1.11.0"
+tonic = "^1.0.19"
+torchvision = "^0.12.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
