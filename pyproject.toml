@@ -7,6 +7,8 @@ authors = ["Robin Chan <chanr@student.ethz.ch>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 torch = "^1.11.0"
+tonic = "^1.0.19"
+torchvision = "^0.12.0"
 
 [tool.poetry.dev-dependencies]
 

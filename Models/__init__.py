@@ -1,5 +1,6 @@
 from .ResNet import *
 from .VGG import *
+from .CNN import *
 
 def modelpool(MODELNAME, DATANAME):
     if 'imagenet' in DATANAME.lower():
@@ -14,6 +15,8 @@ def modelpool(MODELNAME, DATANAME):
         return resnet18(num_classes=num_classes)
     elif MODELNAME.lower() == 'resnet34':
         return resnet34(num_classes=num_classes)
+    elif MODELNAME.lower() == 'cnn':
+        return CNN(num_cöasses=num_classes)
     else:
         print("still not support this model")
         exit(0)
