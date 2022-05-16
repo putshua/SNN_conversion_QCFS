@@ -4,7 +4,7 @@
 
 # Python files
 __pycache__/
-*.pyc
+**.pyc
 *.out
 
 # Jupyter notebooks
@@ -15,6 +15,7 @@ __pycache__/
 
 # WIP Serialized models
 # models/*
+explore_data.py
 
 # Data
 data/
