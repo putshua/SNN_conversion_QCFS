@@ -7,6 +7,8 @@ def modelpool(MODELNAME, DATANAME):
         num_classes = 1000
     elif '100' in DATANAME.lower():
         num_classes = 100
+    elif 'dvsgestures' in DATANAME.lower():
+        num_classes = 11
     else:
         num_classes = 10
     if MODELNAME.lower() == 'vgg16':
@@ -16,7 +18,10 @@ def modelpool(MODELNAME, DATANAME):
     elif MODELNAME.lower() == 'resnet34':
         return resnet34(num_classes=num_classes)
     elif MODELNAME.lower() == 'cnn':
-        return CNN(num_classes=num_classes)
+        if 'cifar' in DATANAME.lower(): 
+            return cnn(width=32, height=32, in_channels=3, num_classes=num_classes)
+        elif 'dvsgestures' in DATANAME.lower():
+            return cnn(width=128, height=128, in_channels=2, num_classes=num_classes)
     else:
-        print("still not support this model")
+        print("still not support this model/dataset combination")
         exit(0)
