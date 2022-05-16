@@ -2,10 +2,10 @@ import torch.nn as nn
 
 
 class CNN(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, width, height, in_channels,num_classes):
         super(CNN, self).__init__()
-        self.in_channels = 3 # I think there are 3 RGB input channels?
-        self.out_channels = 5
+        self.in_channels = in_channels
+        self.out_channels = 8 # intermediate channels
         self.num_classes = num_classes
 
         self.cnn_layers = nn.Sequential(
@@ -22,7 +22,7 @@ class CNN(nn.Module):
         )
 
         self.linear_layer = nn.Sequential(
-            nn.Linear(self.out_channels * 8 * 8, self.num_classes) # 8 because of the MaxPool: Hout = (Hin - 2)/2 + 1, Hin = Win = 32
+            nn.Linear(self.out_channels * (width / 4) * (height / 4), self.num_classes) # 4, since the size halves at each maxpool w/current config: Hout = (Hin - 2)/2 + 1
         )
     def forward(self, x):
         x = self.cnn_layers(x)
@@ -30,7 +30,7 @@ class CNN(nn.Module):
         x = self.linear_layer(x)
         return x
 
-def cnn(num_classes=10, **kwargs): 
+def cnn(width, height, in_channels, num_classes, **kwargs): 
     """ returns CNN object
     """
-    return CNN(num_classes=num_classes)
+    return CNN(width, height, in_channels, num_classes)

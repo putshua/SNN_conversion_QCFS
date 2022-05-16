@@ -7,8 +7,10 @@ from utils import replace_activation_by_floor, replace_activation_by_neuron, rep
 from ImageNet.train import main_worker
 import torch.nn as nn
 import os
+import ssl
 
 if __name__ == "__main__":
+    ssl._create_default_https_context = ssl._create_unverified_context
 
     parser = argparse.ArgumentParser()
 

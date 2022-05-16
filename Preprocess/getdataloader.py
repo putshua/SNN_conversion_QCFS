@@ -12,10 +12,13 @@ from tonic.slicers import SliceByEventCount
 from tonic import SlicedDataset
 
 # your own data dir
-DIR = { 'CIFAR10': '/cluster/scratch/chanr/datasets',
+DIR = { 
+        'CIFAR10': '/cluster/scratch/chanr/datasets',
+        # 'CIFAR10': './data',
         'CIFAR100': '/cluster/scratch/chanr/datasets',
         'ImageNet': 'YOUR_IMAGENET_DIR', 
         'DVSGesture': '/cluster/scratch/chanr/datasets'
+        # 'DVSGesture': './data'
     }
 
 # def GetCifar10(batchsize, attack=False):
