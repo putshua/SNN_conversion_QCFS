@@ -16,7 +16,7 @@ def modelpool(MODELNAME, DATANAME):
     elif MODELNAME.lower() == 'resnet34':
         return resnet34(num_classes=num_classes)
     elif MODELNAME.lower() == 'cnn':
-        return CNN(num_cöasses=num_classes)
+        return CNN(num_classes=num_classes)
     else:
         print("still not support this model")
         exit(0)
