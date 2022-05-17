@@ -4,6 +4,8 @@
 
 # Python files
 __pycache__/
+*.py[cod]
+*$py.class
 
 # Jupyter notebooks
 .ipynb_checkpoints
