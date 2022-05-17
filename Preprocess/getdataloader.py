@@ -121,7 +121,8 @@ def GetDVSGesture(batchsize, test_batchsize=4, slicer=SliceByEventCount(event_co
     trans_snn = tonic.transforms.Compose([
         tonic.transforms.Denoise(filter_time=filter_time),
         tonic.transforms.ToFrame(sensor_size=sensor_size, time_window=time_window),
-        transforms.Lambda(lambda x: x[:ms_end, :, :, :])
+        transforms.Lambda(lambda x: x[:ms_end, :, :, :]),
+        transforms.Lambda(lambda x: torch.from_numpy(x))
     ])
 
     train_data = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'train'), train=True, transform=None)
