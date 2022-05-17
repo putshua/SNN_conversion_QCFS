@@ -7,7 +7,7 @@ def modelpool(MODELNAME, DATANAME):
         num_classes = 1000
     elif '100' in DATANAME.lower():
         num_classes = 100
-    elif 'dvsgestures' in DATANAME.lower():
+    elif 'dvsgesture' in DATANAME.lower():
         num_classes = 11
     else:
         num_classes = 10
