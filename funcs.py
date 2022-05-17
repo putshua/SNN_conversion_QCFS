@@ -35,6 +35,7 @@ def eval_ann(test_dataloader, model, loss_fn, device, rank=0):
     return tot/length, epoch_loss/length
 
 def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn, lr=0.1, wd=5e-4, save=None, parallel=False, rank=0):
+    print('Training Model')
     model.cuda(device)
     para1, para2, para3 = regular_set(model)
     optimizer = torch.optim.SGD([
@@ -46,20 +47,28 @@ def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn,
                                 momentum=0.9)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
     best_acc = 0
-    for epoch in range(epochs):
+    for ct, epoch in enumerate(range(epochs)):
+        print('Training Epoch: ', ct)
         epoch_loss = 0
         length = 0
         model.train()
-        for img, label in train_dataloader:
+        print(len(train_dataloader))
+        for ct, (img, label) in enumerate(train_dataloader):
             img = img.cuda(device)
             label = label.cuda(device)
             optimizer.zero_grad()
+            # print('Image shape:', img.shape)
             out = model(img)
+            # print(out.shape)
             loss = loss_fn(out, label)
             loss.backward()
             optimizer.step()
+            # print('Computed loss')
             epoch_loss += loss.item()
             length += len(label)
+            print(f'{ct} out of {len(train_dataloader)} batches')
+            # if ct/len(train_dataloader)*100 % 5 == 0: 
+            #     print(f'----- \n Finished all batches {ct/len(train_dataloader)*100} percent')
         tmp_acc, val_loss = eval_ann(test_dataloader, model, loss_fn, device, rank)
         if parallel:
             dist.all_reduce(tmp_acc)
