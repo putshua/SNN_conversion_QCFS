@@ -52,8 +52,8 @@ def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn,
         epoch_loss = 0
         length = 0
         model.train()
-        print(len(train_dataloader))
-        for ct, (img, label) in enumerate(train_dataloader):
+        #print(len(train_dataloader))
+        for ct, (img, label) in enumerate(tqdm(train_dataloader)):
             img = img.cuda(device)
             label = label.cuda(device)
             optimizer.zero_grad()
@@ -66,7 +66,7 @@ def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn,
             # print('Computed loss')
             epoch_loss += loss.item()
             length += len(label)
-            print(f'{ct} out of {len(train_dataloader)} batches')
+            #print(f'{ct} out of {len(train_dataloader)} batches')
             # if ct/len(train_dataloader)*100 % 5 == 0: 
             #     print(f'----- \n Finished all batches {ct/len(train_dataloader)*100} percent')
         tmp_acc, val_loss = eval_ann(test_dataloader, model, loss_fn, device, rank)
@@ -80,7 +80,7 @@ def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn,
         scheduler.step()
     return best_acc, model
 
-def eval_snn(test_dataloader, model, device, sim_len=8, rank=0):
+def eval_snn(test_dataloader, model, device, sim_len=8, rank=0, neuormorphic_data=False):
     tot = torch.zeros(sim_len).cuda(device)
     length = 0
     model = model.cuda(device)
@@ -93,7 +93,10 @@ def eval_snn(test_dataloader, model, device, sim_len=8, rank=0):
             img = img.cuda()
             label = label.cuda()
             for t in range(sim_len):
-                out = model(img)
+                if neuormorphic_data:
+                    out = model(img[:, t, :, :, :])
+                else:
+                    out = model(img)
                 spikes += out
                 tot[t] += (label==spikes.max(1)[1]).sum()
             reset_net(model)

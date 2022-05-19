@@ -13,12 +13,10 @@ from tonic import SlicedDataset, DiskCachedDataset
 
 # your own data dir
 DIR = { 
-        # 'CIFAR10': '/cluster/scratch/chanr/datasets',
-        'CIFAR10': './data',
-        'CIFAR100': '/cluster/scratch/chanr/datasets',
+        'CIFAR10': '/cluster/scratch/rsrinivasan/datasets',
+        'CIFAR100': '/cluster/scratch/rsrinivasan/datasets',
         'ImageNet': 'YOUR_IMAGENET_DIR', 
-        # 'DVSGesture': '/cluster/scratch/chanr/datasets'
-        'DVSGesture': './data'
+        'DVSGesture': '/cluster/scratch/rsrinivasan/datasets'
     }
 
 # def GetCifar10(batchsize, attack=False):
