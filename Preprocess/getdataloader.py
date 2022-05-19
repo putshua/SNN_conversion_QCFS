@@ -108,14 +108,14 @@ def GetDVSGesture(batchsize, test_batchsize=4, slicer=SliceByEventCount(event_co
                             tonic.transforms.RandomFlipPolarity(),
                             tonic.transforms.SpatialJitter(sensor_size=sensor_size, clip_outliers=True),
                             tonic.transforms.ToImage(sensor_size=sensor_size),
-                            transforms.Lambda(lambda x: torch.from_numpy(x)),
+                            transforms.Lambda(lambda x: torch.from_numpy(x/31)),
                             Cutout(n_holes=1, length=8)
                         ])
 
     trans_ann_test = tonic.transforms.Compose([
                             tonic.transforms.Denoise(filter_time=filter_time),
                             tonic.transforms.ToImage(sensor_size=sensor_size),
-                            transforms.Lambda(lambda x: torch.from_numpy(x))
+                            transforms.Lambda(lambda x: torch.from_numpy(x/31))
                         ])
 
     trans_snn = tonic.transforms.Compose([
