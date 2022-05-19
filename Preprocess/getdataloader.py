@@ -9,7 +9,7 @@ import numpy as np
 
 import tonic
 from tonic.slicers import SliceByEventCount
-from tonic import SlicedDataset
+from tonic import SlicedDataset, DiskCachedDataset
 
 # your own data dir
 DIR = { 
@@ -111,20 +111,20 @@ def GetDVSGesture(batchsize, test_batchsize=4, slicer=SliceByEventCount(event_co
                             tonic.transforms.RandomFlipPolarity(),
                             tonic.transforms.SpatialJitter(sensor_size=sensor_size, clip_outliers=True),
                             tonic.transforms.ToImage(sensor_size=sensor_size),
-                            transforms.Lambda(lambda x: torch.from_numpy(x)),
+                            transforms.Lambda(lambda x: torch.from_numpy(x/31)),
                             Cutout(n_holes=1, length=8)
                         ])
 
     trans_ann_test = tonic.transforms.Compose([
                             tonic.transforms.Denoise(filter_time=filter_time),
                             tonic.transforms.ToImage(sensor_size=sensor_size),
-                            transforms.Lambda(lambda x: torch.from_numpy(x))
+                            transforms.Lambda(lambda x: torch.from_numpy(x/31))
                         ])
 
     trans_snn = tonic.transforms.Compose([
         tonic.transforms.Denoise(filter_time=filter_time),
         tonic.transforms.ToFrame(sensor_size=sensor_size, time_window=time_window),
-        transforms.Lambda(lambda x: x[:ms_end, :, :, :])
+        transforms.Lambda(lambda x: x[:ms_end, :, :, :]),
     ])
 
     train_data = tonic.datasets.DVSGesture(save_to=os.path.join(DIR['DVSGesture'], 'train'), train=True, transform=None)
@@ -134,8 +134,11 @@ def GetDVSGesture(batchsize, test_batchsize=4, slicer=SliceByEventCount(event_co
     sliced_td = SlicedDataset(train_data, slicer=slicer, transform=trans_ann_train, metadata_path=os.path.join(DIR['DVSGesture'], 'metedata/train'))
     sliced_ann = SlicedDataset(test_data_ann, slicer=slicer, transform=trans_ann_test, metadata_path=os.path.join(DIR['DVSGesture'], 'metedata/test'))
 
-    train_dataloader = DataLoader(sliced_td, batch_size=batchsize, shuffle=True, num_workers=8, pin_memory=True)
-    test_dataloader_ann = DataLoader(sliced_ann, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
+    cached_td = DiskCachedDataset(sliced_td, target_transform=None, cache_path=os.path.join(DIR['DVSGesture'], 'cache/train'))
+    cached_ann = DiskCachedDataset(sliced_ann, target_transform=None, cache_path=os.path.join(DIR['DVSGesture'], 'cache/test'))
+
+    train_dataloader = DataLoader(cached_td, batch_size=batchsize, shuffle=True, num_workers=8, pin_memory=True)
+    test_dataloader_ann = DataLoader(cached_ann, batch_size=batchsize, shuffle=False, num_workers=4, pin_memory=True)
     test_dataloader_snn = DataLoader(test_data_snn, batch_size=test_batchsize, shuffle=False, num_workers=4, pin_memory=True)
 
     return train_dataloader, test_dataloader_ann, test_dataloader_snn
