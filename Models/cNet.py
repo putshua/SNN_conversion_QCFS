@@ -17,26 +17,26 @@ class cNet(nn.Module):
             nn.Conv2d(in_channels=self.in_channels, out_channels=self.out_channels_1, kernel_size=4, stride=2, padding=1),
             nn.BatchNorm2d(self.out_channels_1),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=1),
+            # nn.MaxPool2d(kernel_size=2, stride=1),
             # Defining another 2D convolution layer
             nn.Conv2d(in_channels=self.out_channels_1, out_channels=self.out_channels_2, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(self.out_channels_2),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=1),
+            # nn.MaxPool2d(kernel_size=2, stride=1),
             # Defining another 2D convolution layer
             nn.Conv2d(in_channels=self.out_channels_2, out_channels=self.out_channels_3, kernel_size=3, stride=2, padding=1),
             nn.BatchNorm2d(self.out_channels_3),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=1),
+            # nn.MaxPool2d(kernel_size=2, stride=1),
             # Defining another 2D convolution layer
             nn.Conv2d(in_channels=self.out_channels_3, out_channels=self.out_channels_4, kernel_size=4, stride=1, padding=1),
             nn.BatchNorm2d(self.out_channels_4),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=1),
+            # nn.MaxPool2d(kernel_size=2, stride=1),
         )
 
         self.linear_layer = nn.Sequential(
-            nn.Linear(self.out_channels_4 * 28 * 28, self.num_classes) # assumes 128x128 input, change if necessary
+            nn.Linear(self.out_channels_4 * 31 * 31, self.num_classes) # assumes 128x128 input, change if necessary
         )
     
     def forward(self, x):
