@@ -34,7 +34,7 @@ def eval_ann(test_dataloader, model, loss_fn, device, rank=0):
             tot += (label==out.max(1)[1]).sum().data
     return tot/length, epoch_loss/length
 
-def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn, lr=0.1, wd=1e-4, save=None, parallel=False, rank=0):
+def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn, lr=0.1, wd=1e-5, save=None, parallel=False, rank=0):
     print('Training Model')
     model.cuda(device)
     # para1, para2, para3 = regular_set(model)
@@ -45,7 +45,7 @@ def train_ann(train_dataloader, test_dataloader, model, epochs, device, loss_fn,
     #                             ],
     #                             lr=lr, 
     #                             momentum=0.9)
-    optimizer = optim.Adam(model.parameters(), lr=0.0005, weight_decay=wd)
+    optimizer = optim.Adam(model.parameters(), lr=0.005, weight_decay=wd)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
     best_acc = 0
     for ct, epoch in enumerate(range(epochs)):
