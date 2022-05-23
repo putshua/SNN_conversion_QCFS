@@ -35,3 +35,5 @@ def cnn(width, height, in_channels, num_classes, **kwargs):
     """ returns CNN object
     """
     return CNN(width, height, in_channels, num_classes)
+
+

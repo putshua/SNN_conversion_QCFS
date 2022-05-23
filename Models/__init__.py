@@ -1,6 +1,7 @@
 from .ResNet import *
 from .VGG import *
 from .CNN import *
+from .cNet import *
 
 def modelpool(MODELNAME, DATANAME):
     if 'imagenet' in DATANAME.lower():
@@ -22,6 +23,9 @@ def modelpool(MODELNAME, DATANAME):
             return cnn(width=32, height=32, in_channels=3, num_classes=num_classes)
         elif 'dvsgesture' in DATANAME.lower():
             return cnn(width=128, height=128, in_channels=2, num_classes=num_classes)
+    elif MODELNAME.lower() == 'cnet':
+        if 'dvsgesture' in DATANAME.lower():
+            return cnet(in_channels=2, num_classes=num_classes)
     else:
         print("still not support this model/dataset combination")
         exit(0)
