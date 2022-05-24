@@ -2,6 +2,7 @@ import torch.multiprocessing as mp
 import argparse
 from Models import modelpool
 from Preprocess import datapool
+from live import LiveModule
 from funcs import *
 from utils import replace_activation_by_floor, replace_activation_by_neuron, replace_maxpool2d_by_avgpool2d
 from ImageNet.train import main_worker
@@ -28,6 +29,7 @@ if __name__ == "__main__":
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--data', type=str, default='cifar100')
     parser.add_argument('--model', type=str, default='vgg16')
+    parser.add_argument('--accumulator', type=int, default=100)
     args = parser.parse_args()
     
     seed_all()
@@ -64,3 +66,8 @@ if __name__ == "__main__":
                 print('Accuracy: {:.4f}'.format(acc))
             else:
                 AssertionError('Unrecognized mode')
+        elif args.action == 'live':
+            model.laod_state_dict(torch.load('./saved_models' + args.id + '.pth'))
+            live = LiveModule(model, args.accumulator)
+            live.start()
+            
