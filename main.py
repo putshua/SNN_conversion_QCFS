@@ -49,7 +49,7 @@ if __name__ == "__main__":
             model.load_state_dict(torch.load('./saved_models/' + args.id + '.pth'))
             model = replace_activation_by_neuron(model)
             model.to(args.device)
-            live = LiveModule(model, args.accumulator)
+            live = LiveModule(model, args.accumulator, args.device)
             live.start()
         # preparing data
         else:

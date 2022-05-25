@@ -10,18 +10,13 @@ class CNN(nn.Module):
 
         self.cnn_layers = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(in_channels=self.in_channels, out_channels=8, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(8),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            # Defining another 2D convolution layer
-            nn.Conv2d(8, out_channels=16, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels=self.in_channels, out_channels=16, kernel_size=5, stride=1, padding='same'),
             nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
             nn.Conv2d(16, out_channels=32, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(self.out_channels),
+            nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
@@ -33,6 +28,7 @@ class CNN(nn.Module):
 
 
         self.linear_layer = nn.Sequential(
+            nn.Flatten(),
             nn.Linear(64 * int(width / 8) * int(height / 8), 1024), # 4, since the size halves at each maxpool w/current config: Hout = (Hin - 2)/2 + 1
             nn.ReLU(inplace=True),
             nn.Linear(1024, 256),
@@ -42,7 +38,7 @@ class CNN(nn.Module):
     def forward(self, x):
         x = x.float()
         x = self.cnn_layers(x)
-        x = x.view(x.size(0), -1)
+        # x = x.reashape(x.size(0), -1)
         x = self.linear_layer(x)
         return x
 
