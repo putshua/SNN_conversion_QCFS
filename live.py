@@ -1,6 +1,5 @@
 from dv import NetworkFrameInput
 import numpy as np
-import cv2
 
 DVS_LABELS = {
     1: 'hand clap',
@@ -57,8 +56,6 @@ class LiveModule:
                 # print live images 
                 # ToDo: elaborate something fancier
                 # ToDo: add a way to stop the simulation
-                cv2.imshow('output channel 1', channel1)
-                cv2.imshow('output channel 2', channel2)
-                cv2.waitkey(1)
+
             
                 idx =+ 1

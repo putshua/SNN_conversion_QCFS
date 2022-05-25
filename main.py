@@ -46,7 +46,7 @@ if __name__ == "__main__":
         model = replace_activation_by_floor(model, t=args.l)
         criterion = nn.CrossEntropyLoss()
         if args.action == 'live':
-            model.laod_state_dict(torch.load('./saved_models' + args.id + '.pth'))
+            model.load_state_dict(torch.load('./saved_models/' + args.id + '.pth'))
             model = replace_activation_by_neuron(model)
             model.to(args.device)
             live = LiveModule(model, args.accumulator)
