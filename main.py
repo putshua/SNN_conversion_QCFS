@@ -40,34 +40,36 @@ if __name__ == "__main__":
             AssertionError('Only ImageNet using multiprocessing.')
         mp.spawn(main_worker, nprocs=args.gpus, args=(args.gpus, args))
     else:
-        # preparing data
-        if args.data == 'dvsgesture':
-            train, test, test_snn = datapool(args.data, args.bs)
-        else: 
-            train, test = datapool(args.data, args.bs)
         # preparing model
         model = modelpool(args.model, args.data)
         model = replace_maxpool2d_by_avgpool2d(model)
         model = replace_activation_by_floor(model, t=args.l)
         criterion = nn.CrossEntropyLoss()
-
-        if args.action == 'train':
-            train_ann(train, test, model, args.epochs, args.device, criterion, args.lr, args.wd, args.id)
-        elif args.action == 'test' or args.action == 'evaluate':
-            model.load_state_dict(torch.load('./saved_models/' + args.id + '.pth'))
-            if args.mode == 'snn':
-                model = replace_activation_by_neuron(model)
-                model.to(args.device)
-                acc = eval_snn(test, model, args.device, args.t)
-                print('Accuracy: ', acc)
-            elif args.mode == 'ann':
-                model.to(args.device)
-                acc, _ = eval_ann(test, model, criterion, args.device)
-                print('Accuracy: {:.4f}'.format(acc))
-            else:
-                AssertionError('Unrecognized mode')
-        elif args.action == 'live':
+        if args.action == 'live':
             model.laod_state_dict(torch.load('./saved_models' + args.id + '.pth'))
+            model = replace_activation_by_neuron(model)
+            model.to(args.device)
             live = LiveModule(model, args.accumulator)
             live.start()
+        # preparing data
+        else:
+            if args.data == 'dvsgesture':
+                train, test, test_snn = datapool(args.data, args.bs)
+            else: 
+                train, test = datapool(args.data, args.bs)
+            if args.action == 'train':
+                train_ann(train, test, model, args.epochs, args.device, criterion, args.lr, args.wd, args.id)
+            elif args.action == 'test' or args.action == 'evaluate':
+                model.load_state_dict(torch.load('./saved_models/' + args.id + '.pth'))
+                if args.mode == 'snn':
+                    model = replace_activation_by_neuron(model)
+                    model.to(args.device)
+                    acc = eval_snn(test, model, args.device, args.t)
+                    print('Accuracy: ', acc)
+                elif args.mode == 'ann':
+                    model.to(args.device)
+                    acc, _ = eval_ann(test, model, criterion, args.device)
+                    print('Accuracy: {:.4f}'.format(acc))
+                else:
+                    AssertionError('Unrecognized mode')
             
