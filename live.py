@@ -47,7 +47,8 @@ class LiveModule:
 
 
                 # call model
-                output = self.model(image)
+                with torch.no_grad():
+                    output = self.model(image)
 
                 # store result
                 spikes_buffer += output
@@ -69,4 +70,4 @@ class LiveModule:
                 # ToDo: add a way to stop the simulation
 
             
-                idx =+ 1
+                idx += 1
