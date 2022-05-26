@@ -1,19 +1,21 @@
 from dv import NetworkFrameInput
 import numpy as np
 import torch
+import cv2
+import os
 
 DVS_LABELS = {
-    1: 'hand clap',
-    2: 'right hand wave',
-    3: 'left hand wave',
-    4: 'right arm clockwise',
-    5: 'right arm counter clockwise',
-    6: 'left arm clockwise',
-    7: 'left arm counter clockwise',
-    8: 'arm roll',
-    9: 'air drums',
-    10: 'air guitar',
-    11: 'other gestures',
+    0: 'hand clap',
+    1: 'right hand wave',
+    2: 'left hand wave',
+    3: 'right arm clockwise',
+    4: 'right arm counter clockwise',
+    5: 'left arm clockwise',
+    6: 'left arm counter clockwise',
+    7: 'arm roll',
+    8: 'air drums',
+    9: 'air guitar',
+    10: 'other gestures',
 }
 
 class LiveModule:
@@ -43,6 +45,11 @@ class LiveModule:
                 image = torch.permute(image, (0, 3, 1, 2))
                 image = image[:, :, :128, :128]
 
+                # cv2.imshow('image test', image[0, 0, :, :].numpy())
+                # cv2.waitKey(100)
+                # print(image)
+
+                # print(image.numpy())
                 image = image.cuda()
 
 
@@ -57,13 +64,20 @@ class LiveModule:
                     spikes_buffer -= spikes_mem.pop(0)
                 
                 # translate pred
+
                 # ToDo: retrieve confidence distribution
                 # Question: what's happening here ?
-                pred = spikes_buffer.max(1)[1]
+
+                pred = spikes_buffer[:, :10].max(1)[1]
 
                 # print pred
                 # ToDo: Showcase confidencence distribution
-                print(DVS_LABELS[pred.item()])
+                if idx%100 == 0: 
+                    os.system('clear')
+
+                    print(spikes_buffer[:, :10])
+                    print(DVS_LABELS[pred.item()])
+
 
                 # print live images 
                 # ToDo: elaborate something fancier
