@@ -2,7 +2,7 @@ import torch.multiprocessing as mp
 import argparse
 from Models import modelpool
 from Preprocess import datapool
-from live import LiveModule
+#from live import LiveModule
 from funcs import *
 from utils import replace_activation_by_floor, replace_activation_by_neuron, replace_maxpool2d_by_avgpool2d
 from ImageNet.train import main_worker
@@ -46,11 +46,14 @@ if __name__ == "__main__":
         model = replace_activation_by_floor(model, t=args.l)
         criterion = nn.CrossEntropyLoss()
         if args.action == 'live':
+            pass
+            '''
             model.load_state_dict(torch.load('./saved_models/' + args.id + '.pth'))
             model = replace_activation_by_neuron(model)
             model.to(args.device)
             live = LiveModule(model, args.accumulator, args.device)
             live.start()
+            '''
         # preparing data
         else:
             if args.data == 'dvsgesture':
