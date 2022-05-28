@@ -39,7 +39,7 @@ class CNN(nn.Module):
     def forward(self, x):
         x = x.float()
         x = self.cnn_layers(x)
-        x = x.view(x.size(0), -1)
+        # x = x.view(x.size(0), -1)
         x = self.linear_layer(x)
         return x
 
