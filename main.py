@@ -73,7 +73,10 @@ if __name__ == "__main__":
                 if args.mode == 'snn':
                     model = replace_activation_by_neuron(model)
                     model.to(args.device)
-                    acc = eval_snn(test, model, args.device, args.t)
+                    if args.data == 'dvsgesture':
+                        acc = eval_snn(test_snn, model, args.device, args.t, neuormorphic_data=True)
+                    else:
+                        acc = eval_snn(test, model, args.device, args.t)
                     print('Accuracy: ', acc)
                 elif args.mode == 'ann':
                     model.to(args.device)
