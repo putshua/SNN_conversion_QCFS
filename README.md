@@ -1,5 +1,12 @@
+# IMPORTANT
+**I have updated a new version in a new repo at https://github.com/putshua/ANN_SNN_QCFS.
+The biggest unreproducable bug is fixed.
+Compatible with old version.
+Please switch to the new version.**
+
 # Optimal ANN-SNN Conversion for High-accuracy and Ultra-low-latency Spiking Neural Networks
 Codes for Optimal ANN-SNN Conversion for High-accuracy and Ultra-low-latency Spiking Neural Networks
+
 
 ## Usage
 
